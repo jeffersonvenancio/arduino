@@ -1,9 +1,3 @@
-/*
- Example sketch for the PS3 Bluetooth library - developed by Kristian Lauszus
- For more information visit my blog: http://blog.tkjelectronics.dk/ or
- send me an e-mail:  kristianl@tkjelectronics.com
- */
-
 #include <PS3BT.h>
 #include <usbhub.h>
 
@@ -80,58 +74,6 @@ void loop() {
       PS3.disconnect();
     }
     else {
-      //      if (PS3.getButtonClick(TRIANGLE)) {
-      //        Serial.print(F("\r\nTraingle"));
-      //        PS3.setRumbleOn(RumbleLow);
-      //      }
-      //      if (PS3.getButtonClick(CIRCLE)) {
-      //        Serial.print(F("\r\nCircle"));
-      //        PS3.setRumbleOn(RumbleHigh);
-      //      }
-      //      if (PS3.getButtonClick(CROSS)){
-      //        Serial.print(F("\r\nCross"));
-      //      }
-      //      if (PS3.getButtonClick(SQUARE)){
-      //        Serial.print(F("\r\nSquare"));
-      //      }
-      //      if (PS3.getButtonClick(UP)) {
-      //        Serial.print(F("\r\nUp"));
-      //        if (PS3.PS3Connected) {
-      //          PS3.setLedOff();
-      //          PS3.setLedOn(LED4);
-      //        }
-      //      }
-      //      if (PS3.getButtonClick(RIGHT)) {
-      //        Serial.print(F("\r\nRight"));
-      //        if (PS3.PS3Connected) {
-      //          PS3.setLedOff();
-      //          PS3.setLedOn(LED1);
-      //        }
-      //      }
-      //      if (PS3.getButtonClick(DOWN)) {
-      //        Serial.print(F("\r\nDown"));
-      //        if (PS3.PS3Connected) {
-      //          PS3.setLedOff();
-      //          PS3.setLedOn(LED2);
-      //        }
-      //      }
-      //      if (PS3.getButtonClick(LEFT)) {
-      //        Serial.print(F("\r\nLeft"));
-      //        if (PS3.PS3Connected) {
-      //          PS3.setLedOff();
-      //          PS3.setLedOn(LED3);
-      //        }
-      //      }
-
-      //      if (PS3.getButtonClick(L1))
-      //        Serial.print(F("\r\nL1"));
-      //      if (PS3.getButtonClick(L3))
-      //        Serial.print(F("\r\nL3"));
-      //      if (PS3.getButtonClick(R1))
-      //        Serial.print(F("\r\nR1"));
-      //      if (PS3.getButtonClick(R3))
-      //        Serial.print(F("\r\nR3"));
-
       if (PS3.getButtonClick(SELECT)) {
         Serial.print(F("\r\nSelect - "));
         PS3.printStatusString();
@@ -141,14 +83,6 @@ void loop() {
         printAngle = !printAngle;
       }
     }
-    //#if 0 // Set this to 1 in order to see the angle of the controller
-    //    if (printAngle) {
-    //      Serial.print(F("\r\nPitch: "));
-    //      Serial.print(PS3.getAngle(Pitch));
-    //      Serial.print(F("\tRoll: "));
-    //      Serial.print(PS3.getAngle(Roll));
-    //    }
-    //#endif
   }
 }
 
