@@ -1,6 +1,8 @@
 #include <PS3BT.h>
 #include <usbhub.h>
 
+#include <Servo.h>
+
 #include <AFMotor.h>
 
 AF_DCMotor motor_direita(1);
@@ -12,12 +14,16 @@ BTD Btd(&Usb);
 //00:19:86:00:0F:F9
 PS3BT PS3(&Btd, 0x00, 0x19, 0x86, 0x00, 0x0F, 0xF9);
 
-bool direita, esquerda, frente, tras, servo_direita, servo_esquerda, servo_cima, servo_baixo, servo_gatilho;
-const int saida_servo_direita =  42;
-const int saida_servo_esquerda =  44;
-const int saida_servo_baixo =  46;
-const int saida_servo_cima =  48;
-const int saida_servo_gatilho =  50;
+bool direita, esquerda, frente, tras, servo_direita, servo_esquerda, servo_cima, servo_baixo, aciona_gatilho;
+
+Servo servo_y_direita;
+Servo servo_y_esquerda;
+Servo servo_direita_esquerda;
+Servo servo_gatilho;
+
+int pos_direita_esquerda = 90;
+int pos_y_servo_esquerda = 15;
+int pos_y_servo_direita = 15;
 
 void setup() {
   Serial.begin(115200);
@@ -28,12 +34,16 @@ void setup() {
   Serial.print(F("\r\nPS3 Bluetooth Library Started"));
   motor_direita.setSpeed(255);
   motor_esquerda.setSpeed(255);
-  pinMode(saida_servo_direita, OUTPUT);
-  pinMode(saida_servo_esquerda, OUTPUT);
-  pinMode(saida_servo_baixo, OUTPUT);
-  pinMode(saida_servo_cima, OUTPUT);
-  pinMode(saida_servo_gatilho, OUTPUT);
 
+  servo_y_direita.attach(39);
+  servo_y_esquerda.attach(41);
+  servo_direita_esquerda.attach(45);
+  servo_gatilho.attach(37);
+
+  servo_y_direita.write(15);
+  servo_y_esquerda.write(15);
+  servo_direita_esquerda.write(90);
+  servo_gatilho.write(90);
 }
 
 void loop() {
@@ -99,10 +109,9 @@ void loop() {
     }
 
     if (PS3.getButtonClick(R1) || PS3.getButtonClick(L1)) {
-      Serial.println("Disparo");
-      servo_gatilho = true;
+      aciona_gatilho = true;
     } else {
-      servo_gatilho = false;
+      aciona_gatilho = false;
     }
 
     if (PS3.getButtonClick(PS)) {
@@ -171,32 +180,39 @@ void loop() {
       motor_esquerda.run(RELEASE);
     }
 
-    if (servo_cima) {
-      digitalWrite(saida_servo_cima, HIGH);
-      digitalWrite(saida_servo_baixo, LOW);
-    } else if (servo_baixo) {
-      digitalWrite(saida_servo_baixo, HIGH);
-      digitalWrite(saida_servo_cima, LOW);
-    } else {
-      digitalWrite(saida_servo_cima, LOW);
-      digitalWrite(saida_servo_baixo, LOW);
+    if (servo_cima  && pos_y_servo_esquerda < 30) {
+      pos_y_servo_esquerda += 1;
+      pos_y_servo_direita -= 1;
+    }
+    if (servo_baixo  && pos_y_servo_esquerda > -30) {
+      pos_y_servo_esquerda -= 1;
+      pos_y_servo_direita += 1;
     }
 
-    if (servo_direita) {
-      digitalWrite(saida_servo_direita, HIGH);
-      digitalWrite(saida_servo_esquerda, LOW);
-    } else if (servo_esquerda) {
-      digitalWrite(saida_servo_esquerda, HIGH);
-      digitalWrite(saida_servo_direita, LOW);
-    } else {
-      digitalWrite(saida_servo_direita, LOW);
-      digitalWrite(saida_servo_esquerda, LOW);
+    if (servo_direita && pos_direita_esquerda < 180) {
+      pos_direita_esquerda += 1;
     }
 
-    if (servo_gatilho) {
-      digitalWrite(saida_servo_gatilho, HIGH);
+    if (servo_esquerda && pos_direita_esquerda > 0) {
+      pos_direita_esquerda -= 1;
+    }
+
+    if (pos_direita_esquerda != 0) {
+      servo_direita_esquerda.write(pos_direita_esquerda);
+    }
+
+    if (pos_y_servo_direita != 15 && pos_y_servo_esquerda != 15) {
+      Serial.println("Sobe");
+      servo_y_direita.write(pos_y_servo_direita);
+      servo_y_esquerda.write(pos_y_servo_esquerda);
+    }
+
+    if (aciona_gatilho) {
+      Serial.println("Tiro");
+      servo_gatilho.write(120);
+      delay(100);
     } else {
-      digitalWrite(saida_servo_gatilho, LOW);
+      servo_gatilho.write(90);
     }
 
   }
